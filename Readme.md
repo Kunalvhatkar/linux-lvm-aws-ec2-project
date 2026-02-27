@@ -29,4 +29,4 @@
 ## 📄 Documentation
 
 Full project documentation:
-[Download PDF] (docs/Linux volume manager AWS EC2 AWS EBS.pdf)
+[Download PDF](docs/Linux-Volume-manager-AWS-EC2-AWS-EBS.pdf)
