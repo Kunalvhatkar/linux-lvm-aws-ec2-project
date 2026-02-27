@@ -25,3 +25,8 @@
 5. Mounted volumes
 6. Extended and reduced logical volumes
 7. Added new disk dynamically to volume group
+
+## 📄 Documentation
+
+Full project documentation:
+[Download PDF](docs/Linux volume manager AWS EC2 AWS EBS.pdf)
