@@ -1,0 +1,102 @@
+===============================
+Linux LVM on AWS EC2 - Commands Used
+===============================
+
+---------------------------------
+1. Check Current Storage
+---------------------------------
+lsblk
+df -h
+
+---------------------------------
+2. Mount EBS Volume
+---------------------------------
+# Create mount directory
+mkdir /mnt/EBS_volume_mount
+
+# Format disk with ext4
+mkfs -t ext4 /dev/nvme3n1
+
+# Mount EBS volume
+mount /dev/nvme3n1 /mnt/EBS_volume_mount
+
+# Verify mount
+lsblk
+
+---------------------------------
+3. Create Physical Volumes
+---------------------------------
+pvcreate /dev/nvme1n1 /dev/nvme2n1
+
+# List physical volumes
+pvs
+
+---------------------------------
+4. Create Volume Group
+---------------------------------
+vgcreate lvm_practice /dev/nvme1n1 /dev/nvme2n1
+
+---------------------------------
+5. Create Logical Volumes
+---------------------------------
+lvcreate -L 8G -n 8G_lv lvm_practice
+lvcreate -L 3.5G -n 3_5G_lv lvm_practice
+
+---------------------------------
+6. Format and Mount Logical Volume
+---------------------------------
+mkdir /mnt/8G_lv_mount
+
+mkfs.ext4 /dev/lvm_practice/8G_lv
+
+lsblk -f
+
+mount /dev/lvm_practice/8G_lv /mnt/8G_lv_mount
+
+---------------------------------
+7. Extend Logical Volume (No Downtime)
+---------------------------------
+lvextend -L +2G /dev/lvm_practice/8G_lv
+
+resize2fs /dev/lvm_practice/8G_lv
+
+---------------------------------
+8. Reduce Logical Volume
+---------------------------------
+umount /mnt/8G_lv_mount
+
+e2fsck -f /dev/lvm_practice/8G_lv
+
+resize2fs /dev/lvm_practice/8G_lv 6G
+
+lvreduce -L 6G /dev/lvm_practice/8G_lv
+
+mount /dev/lvm_practice/8G_lv /mnt/8G_lv_mount
+
+---------------------------------
+9. Add New Disk to Volume Group
+---------------------------------
+pvcreate /dev/nvme3n1
+
+vgextend lvm_practice /dev/nvme3n1
+
+vgdisplay
+
+---------------------------------
+10. Display Detailed Information
+---------------------------------
+pvdisplay
+vgdisplay
+lvdisplay
+
+---------------------------------
+11. Rename Logical Volume
+---------------------------------
+lvrename lvm_practice <old_name> <new_name>
+
+---------------------------------
+12. Remove Logical Volume
+---------------------------------
+umount /mnt/<mount_directory>
+
+lvremove /dev/lvm_practice/<lv_name>
